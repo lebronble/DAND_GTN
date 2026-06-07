@@ -20,7 +20,7 @@ conda activate DAND_GTN
 
 ## Data
 
-Dataset files are not committed to Git. Place them under `datasets/` following the paths in the config files:
+Place datasets under `datasets/` following the paths in the config files:
 
 - `config/train_emotion_gait.yaml`
 - `config/train_elmd.yaml`
@@ -39,4 +39,3 @@ ELMD:
 python main.py --config config/train_elmd.yaml
 ```
 
-Training outputs are written to `runs/` and `work_dir/`, which are ignored by Git.
