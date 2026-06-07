@@ -1,0 +1,98 @@
+work_dir: ./work_dir/DAND_GTN_egait
+model_saved_name: ./runs/DAND_GTN_egait
+
+# feeder
+seed: 4
+feeder: feeders.feeder_same_combine.Feeder
+num_worker: 8
+
+train_feeder_args:
+  random_choose: true
+  random_move: true
+  window_size: 48
+  data_p_path: ./datasets/emotion_gait/train_joint.npy
+  data_m_path: ./datasets/emotion_gait/train_movement.npy
+  label_path: ./datasets/emotion_gait/train_label.pkl
+  feature_path: ./datasets/emotion_gait/train_affective.npy
+  debug: false
+  normalization: false
+
+test_feeder_args:
+  data_p_path: ./datasets/emotion_gait/test_joint.npy
+  data_m_path: ./datasets/emotion_gait/test_movement.npy
+  label_path: ./datasets/emotion_gait/test_label.pkl
+  feature_path: ./datasets/emotion_gait/test_affective.npy
+  normalization: false
+  debug: false
+
+# model
+save_model: false
+model: model.DAND_GTN.Model
+model_args:
+  num_class: 4
+  num_point: 16
+  in_channels_p: 3
+  in_channels_m: 8
+  stage_dims:
+  - 64
+  - 64
+  - 128
+  - 128
+  - 256
+  - 256
+  stage_strides:
+  - 1
+  - 1
+  - 2
+  - 1
+  - 2
+  - 1
+  fusion_after:
+  - 2
+  - 4
+  - 6
+  aff_dim: 1488
+  drop_out: 0.1
+  dndt_relay_nodes:
+  - 8
+  - 8
+  - 4
+  - 4
+  - 2
+  - 2
+  dndt_temporal_window: 12
+  dndt_drop: 0.1
+  dndt_init_scale: 0.1
+  use_data_adjacency: true
+  use_csta_fusion: true
+  adaptive_weight_hidden_ratio: 0.25
+  adaptive_weight_drop: 0.0
+  head_hidden_ratio: 0.75
+  loss_gate_hidden_ratio: 0.5
+  aff_loss_type: MSE
+  aff_loss_ramp_epochs: 10
+  loss_min_cls_weight: 0.6
+  loss_min_aff_weight: 0.05
+  loss_entropy_weight: 0.01
+
+# optim
+weight_decay: 0.001
+base_lr: 0.005
+step:
+- 30
+- 60
+optimizer: SGD
+warm_up_epoch: 5
+nesterov: true
+
+# training
+device:
+- 0
+batch_size: 16
+test_batch_size: 16
+num_epoch: 125
+aff_loss_type: MSE
+aff_loss_ramp_epochs: 10
+loss_min_cls_weight: 0.6
+loss_min_aff_weight: 0.05
+loss_entropy_weight: 0.01
